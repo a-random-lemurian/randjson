@@ -63,6 +63,14 @@ static int _json_value_types[] = {NUMBER, STRING, ARRAY, OBJECT, JSON_NULL};
 /******************************************************************************
  * FORWARD DECLARATIONS
  *****************************************************************************/
+
+/*
+ * Quick and dirty internal RNG object.
+ */
+typedef struct Prng {
+  unsigned int x, y;
+} Prng;
+
 static void _randjson_array(JSON_Array *out, Prng *p, JsonGenerator *JG,
                             int recursion_level);
 static void _randjson_object(JSON_Object *obj, Prng *p, JsonGenerator *JG,
