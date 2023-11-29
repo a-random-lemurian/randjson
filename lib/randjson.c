@@ -91,6 +91,13 @@ static int _recursion_too_deep(int level) {}
  * GENERATOR FUNCTIONS
  *****************************************************************************/
 
+/*
+ * Note that generator functions, when creating JSON objects, will not have to
+ * call json_value_free(), as that can simply be done by randjson_make_json()
+ * on the root object. Parson, the library this library depends on, will do
+ * the heavy-lifting of freeing the entire JSON object.
+ */
+
 /* String of possible characters to use when generating random strings. */
 static const char string_table[87] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                      "abcdefghijklmnopqrstuvwxyz"
