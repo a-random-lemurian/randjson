@@ -167,6 +167,9 @@ static void _randjson_object(JSON_Object *obj, Prng *p, JsonGenerator *JG,
      * declarations do not count as statements.
      */
     case ARRAY:;
+      if (recursion_level > JG->max_recursion) {
+        break;
+      }
       JSON_Value *arr_v = json_value_init_array();
       JSON_Array *arr = json_value_get_array(arr_v);
       _randjson_array(arr, p, JG, recursion_level + 1);
@@ -224,6 +227,9 @@ static void _randjson_array(JSON_Array *out, Prng *p, JsonGenerator *JG,
      * declarations do not count as statements.
      */
     case ARRAY:;
+      if (recursion_level > JG->max_recursion) {
+        break;
+      }
       JSON_Value *arr_v = json_value_init_array();
       JSON_Array *arr = json_value_get_array(arr_v);
       _randjson_array(arr, p, JG, recursion_level + 1);
