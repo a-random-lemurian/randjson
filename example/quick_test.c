@@ -8,8 +8,9 @@ int main()
     int i;
     JsonGenerator JG;
     JG.max_array_len = 5;
-    JG.max_recursion = 3;
-    JG.max_string_len = 30;
+    JG.max_recursion = 2;
+    JG.max_string_len = 3;
+    JG.max_keys = 8;
     for (i = 0; i < 1; i++) {
         char* s = randjson_make_json(clock(), &JG);
         printf("%s\n",s);
