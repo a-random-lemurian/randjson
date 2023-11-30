@@ -146,20 +146,20 @@ static void _randjson_number(JSON_Object *obj, Prng *p, char *k) {
 static void _randjson_object(JSON_Object *obj, Prng *p, JsonGenerator *JG,
                              int recursion_level) {
 
-  char *k = calloc(JG->max_string_len, sizeof(char));
-  char *v = calloc(JG->max_string_len, sizeof(char));
+  char *k = calloc(JG->max_string_len + 1, sizeof(char));
+  char *v = calloc(JG->max_string_len + 1, sizeof(char));
 
   int i;
   int keys = _prng_int(p) % JG->max_keys;
   for (i = 0; i < keys; i++) {
-    _randjson_string(_prng_int(p) % MAX_STRING_LEN, k, p);
+    _randjson_string(_prng_int(p) % JG->max_string_len, k, p);
     int type = _json_value_types[_prng_int(p) % _TYPES_COUNT];
     switch (type) {
     case NUMBER:
       _randjson_number(obj, p, k);
       break;
     case STRING:
-      _randjson_string((_prng_int(p) % MAX_STRING_LEN), v, p);
+      _randjson_string((_prng_int(p) % JG->max_string_len), v, p);
       json_object_dotset_string(obj, k, v);
       break;
     /*
@@ -189,7 +189,7 @@ static void _randjson_object(JSON_Object *obj, Prng *p, JsonGenerator *JG,
         break;
       }
 
-      if (recursion_level < MAX_RECURSION) {
+      if (recursion_level < JG->max_recursion) {
         JSON_Value *sub_v = json_value_init_object();
         JSON_Object *sub_obj = json_value_get_object(sub_v);
         _randjson_object(sub_obj, p, JG, recursion_level + 1);
@@ -206,8 +206,8 @@ static void _randjson_object(JSON_Object *obj, Prng *p, JsonGenerator *JG,
 /* Generate a random array */
 static void _randjson_array(JSON_Array *out, Prng *p, JsonGenerator *JG,
                             int recursion_level) {
-  char *str_v = calloc(MAX_STRING_LEN, sizeof(char));
-  int items = _prng_int(p) % MAX_ARRAY_LEN;
+  char *str_v = calloc(JG->max_string_len + 1, sizeof(char));
+  int items = _prng_int(p) % JG->max_array_len;
   int i;
   for (i = 0; i < items; i++) {
     int type = _json_value_types[_prng_int(p) % _TYPES_COUNT];
@@ -216,7 +216,7 @@ static void _randjson_array(JSON_Array *out, Prng *p, JsonGenerator *JG,
       json_array_append_number(out, (double)_prng_int(p));
       break;
     case STRING:
-      _randjson_string(_prng_int(p) % MAX_STRING_LEN, str_v, p);
+      _randjson_string(_prng_int(p) % JG->max_string_len, str_v, p);
       json_array_append_string(out, str_v);
       break;
     case JSON_NULL:
@@ -246,7 +246,7 @@ static void _randjson_array(JSON_Array *out, Prng *p, JsonGenerator *JG,
         break;
       }
 
-      if (recursion_level < MAX_RECURSION) {
+      if (recursion_level < JG->max_recursion) {
         JSON_Value *sub_v = json_value_init_object();
         JSON_Object *sub_obj = json_value_get_object(sub_v);
         _randjson_object(sub_obj, p, JG, recursion_level + 1);
