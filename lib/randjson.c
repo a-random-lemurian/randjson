@@ -47,6 +47,8 @@
 #define MAX_STRING_LEN 8
 /* Maximum array length. */
 #define MAX_ARRAY_LEN 9
+/* Maximum number of keys per object. */
+#define MAX_KEYS 8
 
 /*** TYPES ***/
 #define NUMBER 1
@@ -134,7 +136,8 @@ static void _randjson_object(JSON_Object *obj, Prng *p, JsonGenerator *JG,
   char *v = calloc(JG->max_string_len, sizeof(char));
 
   int i;
-  for (i = 0; i < _prng_int(p) % 500; i++) {
+  int keys = _prng_int(p) % JG->max_keys;
+  for (i = 0; i < keys; i++) {
     _randjson_string(_prng_int(p) % MAX_STRING_LEN, k, p);
     int type = _json_value_types[_prng_int(p) % _TYPES_COUNT];
     switch (type) {
@@ -267,4 +270,5 @@ void randjson_set_default(JsonGenerator *JG) {
   JG->max_array_len = MAX_ARRAY_LEN;
   JG->max_recursion = MAX_RECURSION;
   JG->max_string_len = MAX_STRING_LEN;
+  JG->max_keys = MAX_KEYS;
 }
