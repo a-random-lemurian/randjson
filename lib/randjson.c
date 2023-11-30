@@ -33,6 +33,7 @@
 #include <parson/parson.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 #include "randjson.h"
@@ -96,6 +97,19 @@ static unsigned int _prng_int(Prng *p) {
 }
 
 static int _recursion_too_deep(int level) {}
+
+static void _die(int i, char* reason)
+{
+  fprintf(stderr, "randjson (error): %s", reason);
+  exit(i);
+}
+
+static void _validate_jg(JsonGenerator *JG)
+{
+  if (JG->max_keys == 0) {
+    _die(1, "Maximum keys cannot be zero");
+  }
+}
 
 /******************************************************************************
  * GENERATOR FUNCTIONS
@@ -252,6 +266,8 @@ char *randjson_make_json(unsigned int seed, JsonGenerator *JG) {
 
   JSON_Value *root_v = json_value_init_object();
   JSON_Object *root_obj = json_value_get_object(root_v);
+
+  validate_jg(JG);
 
   _randjson_object(root_obj, &p, JG, 0);
 
