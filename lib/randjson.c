@@ -267,7 +267,7 @@ char *randjson_make_json(unsigned int seed, JsonGenerator *JG) {
   JSON_Value *root_v = json_value_init_object();
   JSON_Object *root_obj = json_value_get_object(root_v);
 
-  validate_jg(JG);
+  _validate_jg(JG);
 
   _randjson_object(root_obj, &p, JG, 0);
 
